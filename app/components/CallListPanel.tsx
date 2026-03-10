@@ -59,7 +59,6 @@ export default function CallListPanel({
   onFiltersChange,
 }: CallListPanelProps) {
   const [filterOpen, setFilterOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"call" | "sms">("call");
 
   const activeFilterCount = [
     filters.timePeriod !== "all",
@@ -107,30 +106,9 @@ export default function CallListPanel({
             </button>
           </div>
 
-          {/* Call / SMS tabs */}
-          <div className="flex bg-panel-header rounded-lg p-0.5">
-            <button
-              onClick={() => setActiveTab("call")}
-              className={cn(
-                "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
-                activeTab === "call"
-                  ? "bg-white text-foreground shadow-sm"
-                  : "text-muted-foreground"
-              )}
-            >
-              Call
-            </button>
-            <button
-              onClick={() => setActiveTab("sms")}
-              className={cn(
-                "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
-                activeTab === "sms"
-                  ? "bg-white text-foreground shadow-sm"
-                  : "text-muted-foreground"
-              )}
-            >
-              SMS
-            </button>
+          {/* Header label */}
+          <div className="text-sm font-semibold text-foreground">
+            Anrufe
           </div>
         </div>
 
@@ -149,11 +127,14 @@ export default function CallListPanel({
             const isRedName = call.status === "nicht_erfolgreich" || call.status === "weitergeleitet";
 
             return (
-              <button
+              <div
                 key={call.id}
                 onClick={() => onSelectCall(call)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSelectCall(call); }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-border/50",
+                  "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-border/50 cursor-pointer",
                   isSelected
                     ? "bg-primary/5"
                     : "hover:bg-gray-50"
@@ -181,6 +162,9 @@ export default function CallListPanel({
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground truncate mt-0.5">
+                    {call.subject}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground/70 truncate mt-0.5">
                     {formatTimestamp(call.timestamp)}
                   </p>
                 </div>
@@ -191,15 +175,27 @@ export default function CallListPanel({
                     {formatDuration(call.duration)}
                   </span>
                   <div className="flex items-center gap-1 text-muted-foreground">
-                    <button className="p-1 rounded hover:bg-gray-100 transition-colors" title="Abspielen">
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="p-1 rounded hover:bg-gray-200 transition-colors inline-flex"
+                      title="Abspielen"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                    </button>
-                    <button className="p-1 rounded hover:bg-gray-100 transition-colors" title="Herunterladen">
+                    </span>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="p-1 rounded hover:bg-gray-200 transition-colors inline-flex"
+                      title="Herunterladen"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                    </button>
+                    </span>
                   </div>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

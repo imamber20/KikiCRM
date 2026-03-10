@@ -62,7 +62,7 @@ function applyFilters(calls: Call[], filters: FilterState, search: string): Call
 
 export default function AnrufprotokollPage() {
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
-  const [showProfile, setShowProfile] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
 
@@ -73,15 +73,15 @@ export default function AnrufprotokollPage() {
 
   const handleSelectCall = (call: Call) => {
     setSelectedCall(call);
-    setShowProfile(false); // close profile when selecting new call
+    setShowSummary(false);
   };
 
-  const handleShowProfile = () => {
-    setShowProfile(true);
+  const handleToggleSummary = () => {
+    setShowSummary((prev) => !prev);
   };
 
-  const handleCloseProfile = () => {
-    setShowProfile(false);
+  const handleCloseSummary = () => {
+    setShowSummary(false);
   };
 
   return (
@@ -103,14 +103,14 @@ export default function AnrufprotokollPage() {
       {/* Center conversation panel */}
       <ConversationPanel
         call={selectedCall}
-        onNameClick={handleShowProfile}
+        onMoreClick={handleToggleSummary}
       />
 
-      {/* Right detail profile panel (only when name is clicked) */}
-      {showProfile && selectedCall && (
+      {/* Right summary + todo panel (opens on three-dot click) */}
+      {showSummary && selectedCall && (
         <DetailProfilePanel
           call={selectedCall}
-          onClose={handleCloseProfile}
+          onClose={handleCloseSummary}
         />
       )}
     </div>
