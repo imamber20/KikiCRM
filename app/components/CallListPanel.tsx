@@ -59,7 +59,6 @@ export default function CallListPanel({
   onFiltersChange,
 }: CallListPanelProps) {
   const [filterOpen, setFilterOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"call" | "sms">("call");
 
   const activeFilterCount = [
     filters.timePeriod !== "all",
@@ -107,30 +106,9 @@ export default function CallListPanel({
             </button>
           </div>
 
-          {/* Call / SMS tabs */}
-          <div className="flex bg-panel-header rounded-lg p-0.5">
-            <button
-              onClick={() => setActiveTab("call")}
-              className={cn(
-                "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
-                activeTab === "call"
-                  ? "bg-white text-foreground shadow-sm"
-                  : "text-muted-foreground"
-              )}
-            >
-              Call
-            </button>
-            <button
-              onClick={() => setActiveTab("sms")}
-              className={cn(
-                "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
-                activeTab === "sms"
-                  ? "bg-white text-foreground shadow-sm"
-                  : "text-muted-foreground"
-              )}
-            >
-              SMS
-            </button>
+          {/* Header label */}
+          <div className="text-sm font-semibold text-foreground">
+            Anrufe
           </div>
         </div>
 
@@ -184,6 +162,9 @@ export default function CallListPanel({
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground truncate mt-0.5">
+                    {call.subject}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground/70 truncate mt-0.5">
                     {formatTimestamp(call.timestamp)}
                   </p>
                 </div>
