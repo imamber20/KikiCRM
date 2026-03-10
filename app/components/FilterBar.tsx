@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, SlidersHorizontal, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -69,6 +69,13 @@ interface FilterBarProps {
 export default function FilterBar({ open, onClose, filters, onApply }: FilterBarProps) {
   const [local, setLocal] = useState<FilterState>(filters);
 
+  useEffect(() => {
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocal(filters);
+    }
+  }, [filters, open]);
+
   const handleReset = () => {
     setLocal(defaultFilters);
     onApply(defaultFilters);
@@ -89,47 +96,45 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
     }));
   };
 
+  const sectionClassName = "rounded-2xl border border-border bg-gray-50/60 p-4 space-y-3";
+
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/30 z-50"
+            className="fixed inset-0 bg-slate-900/45 backdrop-blur-[1px] z-50"
             onClick={onClose}
           />
 
-          {/* Panel */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 250 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col"
+            transition={{ type: "spring", damping: 26, stiffness: 270 }}
+            className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col border-l border-border"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 h-16 border-b border-border">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between px-6 h-16 border-b border-border bg-white shrink-0">
+              <div className="flex items-center gap-2.5">
                 <SlidersHorizontal size={18} className="text-primary" />
-                <h2 className="text-lg font-semibold">Filter</h2>
+                <h2 className="text-lg font-semibold tracking-tight">Filter</h2>
               </div>
               <button
                 onClick={onClose}
                 className="p-2 rounded-lg hover:bg-muted transition-colors"
+                aria-label="Filter schließen"
               >
                 <X size={18} />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-              {/* Time period */}
-              <div>
-                <label className="text-sm font-medium text-foreground flex items-center gap-2 mb-3">
-                  <Calendar size={14} />
+            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+              <div className={sectionClassName}>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                  <Calendar size={13} />
                   Zeitraum
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -140,8 +145,8 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                       className={cn(
                         "px-3 py-1.5 rounded-full text-sm font-medium border transition-all",
                         local.timePeriod === tp.value
-                          ? "bg-primary text-white border-primary"
-                          : "bg-white text-muted-foreground border-border hover:border-primary/30"
+                          ? "bg-primary text-white border-primary shadow-sm"
+                          : "bg-white text-muted-foreground border-border hover:border-primary/30 hover:bg-primary/5"
                       )}
                     >
                       {tp.label}
@@ -150,9 +155,8 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                 </div>
               </div>
 
-              {/* Status */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-3 block">
+              <div className={sectionClassName}>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
                   Status
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -163,8 +167,8 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                       className={cn(
                         "px-3 py-1.5 rounded-full text-sm font-medium border transition-all",
                         local.status.includes(s.value)
-                          ? "bg-primary text-white border-primary"
-                          : "bg-white text-muted-foreground border-border hover:border-primary/30"
+                          ? "bg-primary text-white border-primary shadow-sm"
+                          : "bg-white text-muted-foreground border-border hover:border-primary/30 hover:bg-primary/5"
                       )}
                     >
                       {s.label}
@@ -173,9 +177,8 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                 </div>
               </div>
 
-              {/* Employee */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
+              <div className={sectionClassName}>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
                   Mitarbeiter
                 </label>
                 <select
@@ -190,9 +193,8 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                 </select>
               </div>
 
-              {/* Topic */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
+              <div className={sectionClassName}>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
                   Thema
                 </label>
                 <select
@@ -207,9 +209,8 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                 </select>
               </div>
 
-              {/* Keyword */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
+              <div className={sectionClassName}>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
                   Stichwort
                 </label>
                 <input
@@ -217,13 +218,12 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                   value={local.keyword}
                   onChange={(e) => setLocal((p) => ({ ...p, keyword: e.target.value }))}
                   placeholder="z.B. Heizung, Wasserhahn..."
-                  className="w-full border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  className="w-full border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                 />
               </div>
 
-              {/* Phone */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
+              <div className={sectionClassName}>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
                   Telefonnummer
                 </label>
                 <input
@@ -231,23 +231,22 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                   value={local.phone}
                   onChange={(e) => setLocal((p) => ({ ...p, phone: e.target.value }))}
                   placeholder="+49..."
-                  className="w-full border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  className="w-full border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                 />
               </div>
 
-              {/* Duration range */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
+              <div className={sectionClassName}>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
                   Anrufdauer (Minuten)
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <input
                     type="number"
                     value={local.minDuration}
                     onChange={(e) => setLocal((p) => ({ ...p, minDuration: e.target.value }))}
                     placeholder="Min"
                     min={0}
-                    className="flex-1 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    className="flex-1 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                   />
                   <span className="text-muted-foreground text-sm">bis</span>
                   <input
@@ -256,14 +255,13 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
                     onChange={(e) => setLocal((p) => ({ ...p, maxDuration: e.target.value }))}
                     placeholder="Max"
                     min={0}
-                    className="flex-1 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    className="flex-1 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="border-t border-border px-6 py-4 flex gap-3">
+            <div className="border-t border-border px-5 py-4 flex gap-3 bg-white/95 backdrop-blur shrink-0">
               <button
                 onClick={handleReset}
                 className="flex-1 px-4 py-2.5 rounded-xl border border-border text-sm font-medium hover:bg-muted transition-colors"
@@ -272,7 +270,7 @@ export default function FilterBar({ open, onClose, filters, onApply }: FilterBar
               </button>
               <button
                 onClick={handleApply}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors shadow-sm"
               >
                 Anwenden
               </button>
