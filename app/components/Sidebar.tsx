@@ -20,25 +20,22 @@ interface NavItem {
 }
 
 const topNav: NavItem[] = [
-  { label: "Analysen",   icon: <BarChart3 size={20} /> },
-  { label: "Anrufe",     icon: <Phone size={20} />,     active: true },
-  { label: "Wissen",     icon: <BookOpen size={20} /> },
-  { label: "Kunden",     icon: <Users size={20} /> },
-  { label: "Mitarbeiter",icon: <UserCog size={20} /> },
-  { label: "Abonnement", icon: <CreditCard size={20} /> },
+  { label: "Analysen", icon: <BarChart3 size={18} /> },
+  { label: "Anrufe", icon: <Phone size={18} />, active: true, badge: 6 },
+  { label: "Wissen", icon: <BookOpen size={18} /> },
+  { label: "Kunden", icon: <Users size={18} /> },
+  { label: "Mitarbeiter", icon: <UserCog size={18} /> },
+  { label: "Abonnement", icon: <CreditCard size={18} /> },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="w-[72px] bg-sidebar-bg h-full flex flex-col items-center pt-5 pb-4 shrink-0 gap-1">
-
-      {/* Logo */}
-      <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center mb-6 shadow-lg shadow-primary/30">
-        <Phone size={18} className="text-white" strokeWidth={2.5} />
+    <aside className="w-[84px] bg-[#14161D] h-full flex flex-col items-center pt-6 pb-4 shrink-0 gap-1 border-r border-white/10">
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center mb-7 shadow-lg shadow-indigo-500/20">
+        <Phone size={18} className="text-white" strokeWidth={2.6} />
       </div>
 
-      {/* Top nav */}
-      <nav className="flex-1 flex flex-col items-center gap-1 w-full px-2">
+      <nav className="flex-1 flex flex-col items-center gap-1.5 w-full px-2.5">
         {topNav.map((item, i) => (
           <button
             key={i}
@@ -46,21 +43,17 @@ export default function Sidebar() {
             className={cn(
               "relative w-full flex flex-col items-center justify-center py-2.5 rounded-2xl transition-all duration-150 gap-1",
               item.active
-                ? "bg-white/10 text-white"
-                : "text-white/35 hover:text-white/70 hover:bg-white/5"
+                ? "bg-white/12 text-white"
+                : "text-white/40 hover:text-white/80 hover:bg-white/6"
             )}
           >
             {item.active && (
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-primary rounded-r-full" />
+              <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-7 rounded-r-full bg-indigo-400" />
             )}
-            <span className={cn(item.active ? "text-primary" : "")}>
-              {item.icon}
-            </span>
-            <span className="text-[9px] font-semibold tracking-wide leading-none text-center">
-              {item.label}
-            </span>
+            <span className={cn(item.active ? "text-indigo-300" : "")}>{item.icon}</span>
+            <span className="text-[9px] font-medium leading-none text-center">{item.label}</span>
             {item.badge && (
-              <span className="absolute top-1.5 right-2 bg-primary text-white text-[9px] font-bold rounded-full min-w-[14px] h-[14px] flex items-center justify-center px-0.5">
+              <span className="absolute top-1.5 right-1.5 bg-orange-500 text-white text-[9px] font-bold rounded-full min-w-[14px] h-[14px] flex items-center justify-center px-0.5">
                 {item.badge}
               </span>
             )}
@@ -68,21 +61,20 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Bottom nav */}
-      <div className="flex flex-col items-center gap-1 w-full px-2">
+      <div className="flex flex-col items-center gap-1.5 w-full px-2.5">
         <button
           title="Einstellungen"
-          className="w-full flex flex-col items-center justify-center py-2.5 rounded-2xl text-white/35 hover:text-white/70 hover:bg-white/5 transition-colors gap-1"
+          className="w-full flex flex-col items-center justify-center py-2.5 rounded-2xl text-white/45 hover:text-white/80 hover:bg-white/6 transition-colors gap-1"
         >
-          <Settings size={20} />
-          <span className="text-[9px] font-semibold tracking-wide">Einstellungen</span>
+          <Settings size={18} />
+          <span className="text-[9px] font-medium tracking-wide">Settings</span>
         </button>
         <button
           title="Abmelden"
-          className="w-full flex flex-col items-center justify-center py-2.5 rounded-2xl text-white/25 hover:text-red-400 hover:bg-red-500/10 transition-colors gap-1"
+          className="w-full flex flex-col items-center justify-center py-2.5 rounded-2xl text-white/30 hover:text-red-300 hover:bg-red-500/10 transition-colors gap-1"
         >
-          <LogOut size={18} />
-          <span className="text-[9px] font-semibold tracking-wide">Abmelden</span>
+          <LogOut size={17} />
+          <span className="text-[9px] font-medium tracking-wide">Logout</span>
         </button>
       </div>
     </aside>

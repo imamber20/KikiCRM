@@ -85,34 +85,32 @@ export default function AnrufprotokollPage() {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-background">
-      {/* Icon sidebar */}
-      <Sidebar />
+    <div className="h-screen w-screen overflow-hidden bg-[#EEF1F7] p-4 md:p-5">
+      <div className="flex h-full w-full overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+        <Sidebar />
 
-      {/* Call list panel */}
-      <CallListPanel
-        calls={filteredCalls}
-        selectedCall={selectedCall}
-        onSelectCall={handleSelectCall}
-        search={search}
-        onSearchChange={setSearch}
-        filters={filters}
-        onFiltersChange={setFilters}
-      />
-
-      {/* Center conversation panel */}
-      <ConversationPanel
-        call={selectedCall}
-        onMoreClick={handleToggleSummary}
-      />
-
-      {/* Right summary + todo panel (opens on three-dot click) */}
-      {showSummary && selectedCall && (
-        <DetailProfilePanel
-          call={selectedCall}
-          onClose={handleCloseSummary}
+        <CallListPanel
+          calls={filteredCalls}
+          selectedCall={selectedCall}
+          onSelectCall={handleSelectCall}
+          search={search}
+          onSearchChange={setSearch}
+          filters={filters}
+          onFiltersChange={setFilters}
         />
-      )}
+
+        <ConversationPanel
+          call={selectedCall}
+          onMoreClick={handleToggleSummary}
+        />
+
+        {showSummary && selectedCall && (
+          <DetailProfilePanel
+            call={selectedCall}
+            onClose={handleCloseSummary}
+          />
+        )}
+      </div>
     </div>
   );
 }

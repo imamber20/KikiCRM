@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, PhoneCall, Search, MoreHorizontal } from "lucide-react";
+import { Phone, PhoneCall, Search, MoreHorizontal, CheckCheck } from "lucide-react";
 import { Call } from "@/lib/dummyCalls";
 import { cn, formatDuration, formatTimestamp, getInitials } from "@/lib/utils";
 import AudioPlayerInline from "./AudioPlayerInline";
@@ -11,19 +11,19 @@ interface ConversationPanelProps {
 }
 
 const statusLabel: Record<string, string> = {
-  erfolgreich:       "Erfolgreich",
+  erfolgreich: "Erfolgreich",
   nicht_erfolgreich: "Nicht erfolgreich",
-  weitergeleitet:    "Weitergeleitet",
+  weitergeleitet: "Weitergeleitet",
 };
 const statusCls: Record<string, string> = {
-  erfolgreich:       "bg-emerald-100 text-emerald-700",
+  erfolgreich: "bg-emerald-100 text-emerald-700",
   nicht_erfolgreich: "bg-red-100 text-red-700",
-  weitergeleitet:    "bg-amber-100 text-amber-700",
+  weitergeleitet: "bg-amber-100 text-amber-700",
 };
 
 const avatarPalette = [
-  "#3B82F6","#10B981","#8B5CF6","#F43F5E",
-  "#F59E0B","#06B6D4","#6366F1","#EC4899","#14B8A6","#F97316",
+  "#3B82F6", "#10B981", "#8B5CF6", "#F43F5E",
+  "#F59E0B", "#06B6D4", "#6366F1", "#EC4899", "#14B8A6", "#F97316",
 ];
 function avatarColor(name: string) {
   let h = 0;
@@ -35,58 +35,56 @@ function timeOnly(iso: string) {
   return new Date(iso).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
 }
 
+const topTabs = ["Status", "Appeals", "Last contact", "Subscribed", "Location", "New user", "Settings"];
+
 export default function ConversationPanel({ call, onMoreClick }: ConversationPanelProps) {
   if (!call) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[#F7F8FC]">
+      <div className="flex-1 flex items-center justify-center bg-[#F4F7FD]">
         <div className="text-center">
           <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mx-auto mb-5 shadow-sm">
-            <Phone size={30} className="text-primary/40" />
+            <Phone size={30} className="text-indigo-300" />
           </div>
-          <p className="text-[16px] font-semibold text-foreground/50">Kiki CRM</p>
-          <p className="text-[13px] text-muted-foreground mt-1">Wählen Sie einen Anruf aus der Liste</p>
+          <p className="text-[16px] font-semibold text-foreground/60">Kiki CRM</p>
+          <p className="text-[13px] text-muted-foreground mt-1">Wähle links eine Konversation aus.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full min-w-0 bg-white">
-
-      {/* ── Header ─────────────────────────────────── */}
-      <div className="h-[68px] px-6 flex items-center justify-between border-b border-border shrink-0 bg-white">
+    <div className="flex-1 flex flex-col h-full min-w-0 bg-[#F4F7FD]">
+      <div className="h-[74px] px-7 flex items-center justify-between border-b border-[#E6EAF3] shrink-0 bg-white">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <div
-            className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center text-white font-bold text-[13px]"
+            className="w-11 h-11 rounded-2xl shrink-0 flex items-center justify-center text-white font-bold text-[13px]"
             style={{ backgroundColor: avatarColor(call.customerName) }}
           >
             {getInitials(call.customerName)}
           </div>
           <div className="min-w-0">
-            <h2 className="text-[15px] font-bold text-foreground leading-none">{call.customerName}</h2>
-            <p className="text-[12px] text-muted-foreground mt-0.5">{call.customerPhone}</p>
+            <h2 className="text-[16px] font-semibold text-slate-900 leading-none">{call.customerName}</h2>
+            <p className="text-[12px] text-muted-foreground mt-1">{call.customerPhone}</p>
           </div>
         </div>
 
-        {/* Subject tag */}
-        <div className="mx-4 hidden md:block">
-          <span className="px-3 py-1 bg-primary/8 text-primary text-[12px] font-medium rounded-full border border-primary/15 truncate max-w-[180px] block">
+        <div className="mx-4 hidden lg:block">
+          <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[12px] font-medium rounded-full border border-indigo-100 truncate max-w-[220px] block">
             {call.subject}
           </span>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           {[
-            { icon: <Search size={16} />,        title: "Suche"          },
-            { icon: <PhoneCall size={16} />,      title: "Anrufen"       },
+            { icon: <Search size={16} />, title: "Suche" },
+            { icon: <PhoneCall size={16} />, title: "Anrufen" },
             { icon: <MoreHorizontal size={16} />, title: "Zusammenfassung", action: onMoreClick },
           ].map(({ icon, title, action }, i) => (
             <button
               key={i}
               onClick={action}
               title={title}
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-gray-100 hover:text-foreground transition-colors"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
             >
               {icon}
             </button>
@@ -94,73 +92,73 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
         </div>
       </div>
 
-      {/* ── Chat area ─────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto bg-[#F7F8FC] px-8 py-6 space-y-1">
+      <div className="px-7 py-3 bg-white border-b border-[#E6EAF3] overflow-x-auto shrink-0">
+        <div className="flex items-center gap-2 min-w-max">
+          {topTabs.map((tab, index) => (
+            <button
+              key={tab}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-[11px] font-medium transition-colors",
+                index === 0 ? "bg-emerald-100 text-emerald-700" : "bg-[#F4F6FC] text-slate-600 hover:bg-slate-200"
+              )}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        {/* Date divider */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-[11px] font-semibold text-muted-foreground px-3 py-1 bg-white rounded-full border border-border shadow-sm">
+      <div className="flex-1 overflow-y-auto px-8 py-7 space-y-6">
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-px bg-[#DCE2EF]" />
+          <span className="text-[11px] font-semibold text-slate-500 px-3 py-1 bg-white rounded-full border border-[#E7EBF4] shadow-sm">
             {formatTimestamp(call.timestamp)}
           </span>
-          <div className="flex-1 h-px bg-border" />
+          <div className="flex-1 h-px bg-[#DCE2EF]" />
         </div>
 
-        {/* ── Kiki AI summary card ── */}
-        <div className="flex items-start gap-3 mb-2 pb-2">
-          {/* Avatar */}
-          <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white text-[11px] font-bold shrink-0">
-            K
-          </div>
-          {/* Bubble */}
-          <div className="max-w-[520px]">
-            <p className="text-[12px] font-semibold text-foreground/70 mb-1.5">Kiki (KI)</p>
-            <div className="bg-white rounded-2xl rounded-tl-sm p-5 shadow-sm border border-border/60">
-              {/* Call subject + meta */}
-              <div className="flex items-start gap-3 mb-4 pb-4 border-b border-border/50">
-                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <PhoneCall size={16} className="text-primary" />
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[11px] font-bold shrink-0">K</div>
+          <div className="max-w-[560px]">
+            <p className="text-[12px] font-semibold text-slate-500 mb-1.5">Kiki (AI Assistant)</p>
+            <div className="bg-white rounded-3xl rounded-tl-sm p-5 shadow-sm border border-[#E6EAF3]">
+              <div className="flex items-start gap-3 mb-4 pb-4 border-b border-[#EDF1F8]">
+                <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
+                  <PhoneCall size={16} className="text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-[14px] font-bold text-foreground leading-tight">{call.subject}</p>
+                  <p className="text-[14px] font-semibold text-slate-900 leading-tight">{call.subject}</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md", statusCls[call.status])}>
-                      {statusLabel[call.status]}
-                    </span>
-                    <span className="text-[11px] text-muted-foreground">{formatDuration(call.duration)}</span>
-                    <span className="text-[11px] text-muted-foreground">· {call.employeeAssigned}</span>
+                    <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md", statusCls[call.status])}>{statusLabel[call.status]}</span>
+                    <span className="text-[11px] text-slate-500">{formatDuration(call.duration)}</span>
+                    <span className="text-[11px] text-slate-500">· {call.employeeAssigned}</span>
                   </div>
                 </div>
               </div>
-              {/* Bullets */}
               <ul className="space-y-2">
                 {call.summaryBullets.map((b, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-[13px] text-foreground/75 leading-snug">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-[5px] shrink-0 opacity-80" />
+                  <li key={i} className="flex items-start gap-2.5 text-[13px] text-slate-600 leading-snug">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-[6px] shrink-0 opacity-80" />
                     {b}
                   </li>
                 ))}
               </ul>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1 ml-1">{timeOnly(call.timestamp)}</p>
+            <p className="text-[10px] text-slate-500 mt-1 ml-1">{timeOnly(call.timestamp)}</p>
           </div>
         </div>
 
-        {/* ── Recording card ── */}
-        <div className="flex items-start gap-3 mb-6">
-          <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white text-[11px] font-bold shrink-0">
-            K
-          </div>
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[11px] font-bold shrink-0">K</div>
           <div className="max-w-[420px] w-full">
-            <p className="text-[12px] font-semibold text-foreground/70 mb-1.5">Aufnahme</p>
-            <div className="bg-white rounded-2xl rounded-tl-sm p-4 shadow-sm border border-border/60">
+            <p className="text-[12px] font-semibold text-slate-500 mb-1.5">Aufnahme</p>
+            <div className="bg-white rounded-3xl rounded-tl-sm p-4 shadow-sm border border-[#E6EAF3]">
               <AudioPlayerInline audioUrl={call.audioUrl} duration={call.duration} />
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1 ml-1">{timeOnly(call.timestamp)}</p>
+            <p className="text-[10px] text-slate-500 mt-1 ml-1">{timeOnly(call.timestamp)}</p>
           </div>
         </div>
 
-        {/* ── Transcript messages ── */}
         {call.transcript.map((line, idx) => {
           const isKiki = line.speaker === "Kiki";
           const prev = idx > 0 ? call.transcript[idx - 1].speaker : null;
@@ -169,62 +167,33 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
           const isLast = line.speaker !== next;
 
           return (
-            <div
-              key={idx}
-              className={cn(
-                "flex items-end gap-2.5",
-                isKiki ? "justify-start" : "justify-end",
-                isFirst ? "mt-5" : "mt-1"
-              )}
-            >
-              {/* Kiki avatar — only on last bubble of a group (bottom-aligned) */}
-              {isKiki && (
-                <div className="w-9 shrink-0">
-                  {isLast && (
-                    <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white text-[11px] font-bold">
-                      K
-                    </div>
-                  )}
-                </div>
-              )}
+            <div key={idx} className={cn("flex items-end gap-2.5", isKiki ? "justify-start" : "justify-end", isFirst ? "mt-2" : "-mt-2") }>
+              {isKiki && <div className="w-9 shrink-0">{isLast && <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[11px] font-bold">K</div>}</div>}
 
               <div className={cn("flex flex-col max-w-[62%]", isKiki ? "items-start" : "items-end")}>
-                {/* Name label — only on first bubble of group */}
-                {isFirst && (
-                  <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 px-1">
-                    {isKiki ? "Kiki (KI)" : call.customerName}
-                  </p>
-                )}
+                {isFirst && <p className="text-[11px] font-semibold text-slate-500 mb-1.5 px-1">{isKiki ? "Kiki" : call.customerName}</p>}
 
-                {/* Bubble */}
                 <div className={cn(
-                  "px-4 py-2.5 text-[13px] leading-relaxed",
+                  "px-4 py-3 text-[13px] leading-relaxed shadow-sm border",
                   isKiki
-                    ? cn("bg-white text-foreground shadow-sm border border-border/50",
-                        isFirst ? "rounded-2xl rounded-tl-sm" : "rounded-2xl")
-                    : cn("text-foreground shadow-sm",
-                        "bg-[#E8FBF2] border border-emerald-100",
-                        isFirst ? "rounded-2xl rounded-tr-sm" : "rounded-2xl")
+                    ? cn("bg-white text-slate-800 border-[#E6EAF3]", isFirst ? "rounded-2xl rounded-tl-sm" : "rounded-2xl")
+                    : cn("text-slate-800 bg-[#DDF8EA] border-emerald-100", isFirst ? "rounded-2xl rounded-tr-sm" : "rounded-2xl")
                 )}>
                   {line.text}
                 </div>
 
-                {/* Timestamp — only on last bubble of group */}
                 {isLast && (
-                  <p className="text-[10px] text-muted-foreground mt-1 px-1">
-                    {timeOnly(call.timestamp)}
-                  </p>
+                  <div className="flex items-center gap-1 mt-1 px-1 text-[10px] text-slate-500">
+                    <span>{timeOnly(call.timestamp)}</span>
+                    {!isKiki && <CheckCheck size={12} className="text-indigo-400" />}
+                  </div>
                 )}
               </div>
 
-              {/* Customer avatar — only on last bubble of group */}
               {!isKiki && (
                 <div className="w-9 shrink-0">
                   {isLast && (
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[11px] font-bold"
-                      style={{ backgroundColor: avatarColor(call.customerName) }}
-                    >
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[11px] font-bold" style={{ backgroundColor: avatarColor(call.customerName) }}>
                       {getInitials(call.customerName)}
                     </div>
                   )}
@@ -234,17 +203,14 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
           );
         })}
 
-        {/* Missed call indicator */}
         {call.status === "nicht_erfolgreich" && (
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-2">
             <div className="bg-white rounded-full px-5 py-2.5 shadow-sm border border-red-100 flex items-center gap-2.5">
               <Phone size={13} className="text-red-500" />
-              <span className="text-[12px] font-semibold text-foreground/70">Verpasster Anruf</span>
+              <span className="text-[12px] font-semibold text-slate-600">Verpasster Anruf</span>
             </div>
           </div>
         )}
-
-        <div className="h-8" />
       </div>
     </div>
   );
