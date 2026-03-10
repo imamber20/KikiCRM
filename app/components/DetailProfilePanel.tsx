@@ -24,7 +24,6 @@ interface DetailProfilePanelProps {
 }
 
 export default function DetailProfilePanel({ call, onClose }: DetailProfilePanelProps) {
-  // Generate todo items from summary bullets — these are the action items from the call
   const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set());
 
   const toggleItem = (index: number) => {
@@ -48,82 +47,86 @@ export default function DetailProfilePanel({ call, onClose }: DetailProfilePanel
   const status = statusLabels[call.status] || statusLabels.erfolgreich;
 
   return (
-    <div className="w-[340px] min-w-[300px] bg-panel-bg border-l border-border h-full flex flex-col shrink-0">
+    <div className="w-[360px] min-w-[320px] bg-panel-bg border-l border-border h-full flex flex-col shrink-0">
       {/* Header */}
-      <div className="h-[60px] px-4 flex items-center justify-between border-b border-border shrink-0">
-        <h3 className="text-sm font-semibold">Zusammenfassung</h3>
+      <div className="h-[64px] px-5 flex items-center justify-between border-b border-border shrink-0">
+        <h3 className="text-[14px] font-semibold text-foreground">Zusammenfassung</h3>
         <button
           onClick={onClose}
-          className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-muted-foreground"
+          className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-muted-foreground"
         >
           <X size={16} />
         </button>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-5">
-        {/* Call metadata */}
-        <div className="mb-5">
-          <div className="flex items-center gap-2 mb-3">
-            <PhoneCall size={16} className="text-primary shrink-0" />
-            <h4 className="text-sm font-semibold truncate">{call.subject}</h4>
+      <div className="flex-1 overflow-y-auto">
+        {/* Call metadata card */}
+        <div className="px-5 py-5 border-b border-border">
+          <div className="flex items-start gap-3 mb-3">
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+              <PhoneCall size={16} className="text-primary" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[14px] font-semibold leading-tight mb-1">{call.subject}</h4>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={cn("px-2.5 py-0.5 rounded-full text-[11px] font-semibold", status.color)}>
+                  {status.label}
+                </span>
+                <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                  <Clock size={12} />
+                  {formatDuration(call.duration)}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", status.color)}>
-              {status.label}
-            </span>
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock size={12} />
-              {formatDuration(call.duration)}
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[12px] text-muted-foreground leading-relaxed">
             {formatTimestamp(call.timestamp)} &middot; {call.employeeAssigned}
           </p>
         </div>
 
         {/* Summary section */}
-        <div className="mb-6">
-          <h4 className="text-sm font-semibold mb-2">Zusammenfassung</h4>
-          <div className="bg-gray-50 rounded-xl p-3">
-            <p className="text-sm text-foreground/80 leading-relaxed">
+        <div className="px-5 py-5 border-b border-border">
+          <h4 className="text-[13px] font-semibold text-foreground mb-3">Zusammenfassung</h4>
+          <div className="bg-gray-50 rounded-xl p-4">
+            <p className="text-[13px] text-foreground/80 leading-relaxed">
               {call.summary}
             </p>
           </div>
         </div>
 
         {/* Key points */}
-        <div className="mb-6">
-          <h4 className="text-sm font-semibold mb-2">Wichtige Punkte</h4>
-          <div className="space-y-2">
+        <div className="px-5 py-5 border-b border-border">
+          <h4 className="text-[13px] font-semibold text-foreground mb-3">Wichtige Punkte</h4>
+          <div className="space-y-2.5">
             {call.summaryBullets.map((bullet, i) => (
-              <div key={i} className="flex items-start gap-2 text-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-                <span className="text-foreground/80">{bullet}</span>
+              <div key={i} className="flex items-start gap-2.5 text-[13px]">
+                <span className="w-2 h-2 rounded-full bg-primary mt-[6px] shrink-0" />
+                <span className="text-foreground/80 leading-relaxed">{bullet}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* To-do list */}
-        <div className="mb-6">
-          <h4 className="text-sm font-semibold mb-2">Aufgaben</h4>
-          <div className="space-y-1">
+        <div className="px-5 py-5 border-b border-border">
+          <h4 className="text-[13px] font-semibold text-foreground mb-3">Aufgaben</h4>
+          <div className="space-y-1.5">
             {call.summaryBullets.map((bullet, i) => {
               const isChecked = checkedItems.has(i);
               return (
                 <button
                   key={i}
                   onClick={() => toggleItem(i)}
-                  className="w-full flex items-start gap-2.5 p-2 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                  className="w-full flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                 >
                   {isChecked ? (
-                    <CheckSquare size={16} className="text-primary shrink-0 mt-0.5" />
+                    <CheckSquare size={18} className="text-primary shrink-0 mt-0.5" />
                   ) : (
-                    <Square size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                    <Square size={18} className="text-gray-300 shrink-0 mt-0.5" />
                   )}
                   <span className={cn(
-                    "text-sm",
+                    "text-[13px] leading-relaxed",
                     isChecked ? "line-through text-muted-foreground" : "text-foreground"
                   )}>
                     {bullet}
@@ -132,32 +135,32 @@ export default function DetailProfilePanel({ call, onClose }: DetailProfilePanel
               );
             })}
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="text-[11px] text-muted-foreground mt-3 px-1">
             {checkedItems.size} von {call.summaryBullets.length} erledigt
           </p>
         </div>
 
-        {/* Contact info (compact) */}
-        <div className="mb-6">
-          <h4 className="text-sm font-semibold mb-2">Kontakt</h4>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <Phone size={14} className="text-muted-foreground shrink-0" />
+        {/* Contact info */}
+        <div className="px-5 py-5 border-b border-border">
+          <h4 className="text-[13px] font-semibold text-foreground mb-3">Kontakt</h4>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 text-[13px]">
+              <Phone size={15} className="text-muted-foreground shrink-0" />
               <span className="text-foreground">{call.customerPhone}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Mail size={14} className="text-muted-foreground shrink-0" />
+            <div className="flex items-center gap-3 text-[13px]">
+              <Mail size={15} className="text-muted-foreground shrink-0" />
               <span className="text-foreground truncate">{call.customerEmail}</span>
             </div>
             {call.customerRole && (
-              <div className="flex items-center gap-2 text-sm">
-                <User size={14} className="text-muted-foreground shrink-0" />
+              <div className="flex items-center gap-3 text-[13px]">
+                <User size={15} className="text-muted-foreground shrink-0" />
                 <span className="text-foreground">{call.customerRole}</span>
               </div>
             )}
             {call.customerCompany && (
-              <div className="flex items-center gap-2 text-sm">
-                <Building2 size={14} className="text-muted-foreground shrink-0" />
+              <div className="flex items-center gap-3 text-[13px]">
+                <Building2 size={15} className="text-muted-foreground shrink-0" />
                 <span className="text-foreground">{call.customerCompany}</span>
               </div>
             )}
@@ -165,21 +168,23 @@ export default function DetailProfilePanel({ call, onClose }: DetailProfilePanel
         </div>
 
         {/* Export buttons */}
-        <div className="space-y-2">
-          <button
-            onClick={() => exportCallToPDF(call)}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-border text-sm font-medium hover:bg-gray-50 transition-colors"
-          >
-            <FileText size={14} />
-            Export PDF
-          </button>
-          <button
-            onClick={() => exportSingleCallToCSV(call)}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-border text-sm font-medium hover:bg-gray-50 transition-colors"
-          >
-            <FileSpreadsheet size={14} />
-            Export CSV
-          </button>
+        <div className="px-5 py-5">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => exportCallToPDF(call)}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border text-[13px] font-medium hover:bg-gray-50 transition-colors"
+            >
+              <FileText size={14} />
+              PDF
+            </button>
+            <button
+              onClick={() => exportSingleCallToCSV(call)}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border text-[13px] font-medium hover:bg-gray-50 transition-colors"
+            >
+              <FileSpreadsheet size={14} />
+              CSV
+            </button>
+          </div>
         </div>
       </div>
     </div>

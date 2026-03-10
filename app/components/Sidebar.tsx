@@ -28,14 +28,14 @@ const topItems: SidebarItem[] = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-[56px] bg-sidebar-bg h-full flex flex-col items-center py-4 shrink-0">
+    <aside className="w-[60px] bg-sidebar-bg h-full flex flex-col items-center py-5 shrink-0">
       {/* Logo */}
-      <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center mb-6">
-        <Phone size={18} className="text-white" />
+      <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center mb-8">
+        <Phone size={20} className="text-white" />
       </div>
 
       {/* Nav icons */}
-      <nav className="flex-1 flex flex-col items-center gap-1">
+      <nav className="flex-1 flex flex-col items-center gap-2">
         {topItems.map((item, i) => (
           <button
             key={i}
@@ -49,7 +49,7 @@ export default function Sidebar() {
           >
             {item.icon}
             {/* Tooltip */}
-            <span className="absolute left-full ml-2 px-2 py-1 bg-slate-900 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+            <span className="absolute left-full ml-3 px-2.5 py-1 bg-slate-900 text-white text-[11px] rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
               {item.label}
             </span>
           </button>
@@ -57,7 +57,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom: help */}
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center">
         <button
           title="Hilfe"
           className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"

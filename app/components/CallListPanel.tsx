@@ -20,21 +20,17 @@ const statusConfig = {
   erfolgreich: {
     icon: <PhoneIncoming size={14} />,
     color: "text-emerald-500",
-    label: "Erfolgreich",
   },
   nicht_erfolgreich: {
     icon: <PhoneMissed size={14} />,
     color: "text-red-500",
-    label: "Nicht erfolgreich",
   },
   weitergeleitet: {
     icon: <PhoneForwarded size={14} />,
     color: "text-amber-500",
-    label: "Weitergeleitet",
   },
 };
 
-// Deterministic avatar colors
 const avatarColors = [
   "bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-rose-500",
   "bg-amber-500", "bg-cyan-500", "bg-indigo-500", "bg-pink-500",
@@ -72,11 +68,11 @@ export default function CallListPanel({
 
   return (
     <>
-      <div className="w-[380px] min-w-[320px] bg-panel-bg border-r border-border flex flex-col h-full shrink-0">
+      <div className="w-[360px] min-w-[300px] bg-panel-bg border-r border-border flex flex-col h-full shrink-0">
         {/* Header */}
-        <div className="px-4 pt-3 pb-2">
+        <div className="px-4 pt-4 pb-3 border-b border-border">
           {/* Search row */}
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
@@ -84,13 +80,13 @@ export default function CallListPanel({
                 value={search}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Suche nach Kunde, Datum, Stichwort..."
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-panel-header border-0 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="w-full pl-9 pr-3 py-[9px] rounded-lg bg-panel-header border-0 text-[13px] placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <button
               onClick={() => setFilterOpen(true)}
               className={cn(
-                "p-2 rounded-lg transition-colors relative",
+                "p-2.5 rounded-lg transition-colors relative shrink-0",
                 activeFilterCount > 0
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:bg-panel-header"
@@ -104,11 +100,6 @@ export default function CallListPanel({
                 </span>
               )}
             </button>
-          </div>
-
-          {/* Header label */}
-          <div className="text-sm font-semibold text-foreground">
-            Anrufe
           </div>
         </div>
 
@@ -134,15 +125,15 @@ export default function CallListPanel({
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSelectCall(call); }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-border/50 cursor-pointer",
+                  "flex items-center gap-3 px-4 py-3.5 transition-colors border-b border-border/40 cursor-pointer",
                   isSelected
-                    ? "bg-primary/5"
-                    : "hover:bg-gray-50"
+                    ? "bg-primary/5 border-l-2 border-l-primary"
+                    : "hover:bg-gray-50 border-l-2 border-l-transparent"
                 )}
               >
                 {/* Avatar */}
                 <div className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0",
+                  "w-10 h-10 rounded-full flex items-center justify-center text-white text-[13px] font-semibold shrink-0",
                   getAvatarColor(call.customerName)
                 )}>
                   {getInitials(call.customerName)}
@@ -150,9 +141,9 @@ export default function CallListPanel({
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 mb-0.5">
                     <span className={cn(
-                      "font-semibold text-sm truncate",
+                      "font-semibold text-[13px] truncate",
                       isRedName ? "text-red-500" : "text-foreground"
                     )}>
                       {call.customerName}
@@ -161,37 +152,37 @@ export default function CallListPanel({
                       {status.icon}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground truncate mt-0.5">
+                  <p className="text-[12px] text-muted-foreground truncate leading-relaxed">
                     {call.subject}
                   </p>
-                  <p className="text-[11px] text-muted-foreground/70 truncate mt-0.5">
+                  <p className="text-[11px] text-muted-foreground/60 mt-0.5">
                     {formatTimestamp(call.timestamp)}
                   </p>
                 </div>
 
-                {/* Right side: duration + play/download icons */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-medium tabular-nums text-foreground">
+                {/* Right side: duration + actions */}
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  <span className="text-[13px] font-semibold tabular-nums text-foreground">
                     {formatDuration(call.duration)}
                   </span>
-                  <div className="flex items-center gap-1 text-muted-foreground">
+                  <div className="flex items-center gap-0.5 text-muted-foreground/60">
                     <span
                       role="button"
                       tabIndex={0}
-                      className="p-1 rounded hover:bg-gray-200 transition-colors inline-flex"
+                      className="p-1 rounded hover:bg-gray-200 hover:text-muted-foreground transition-colors inline-flex"
                       title="Abspielen"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
                     </span>
                     <span
                       role="button"
                       tabIndex={0}
-                      className="p-1 rounded hover:bg-gray-200 transition-colors inline-flex"
+                      className="p-1 rounded hover:bg-gray-200 hover:text-muted-foreground transition-colors inline-flex"
                       title="Herunterladen"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     </span>
                   </div>
                 </div>
