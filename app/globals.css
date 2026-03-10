@@ -1,21 +1,24 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #171717;
+  --color-background: #F0F2F5;
+  --color-foreground: #111B21;
   --color-primary: #10B981;
   --color-primary-light: #D1FAE5;
   --color-primary-dark: #059669;
   --color-success: #10B981;
   --color-error: #EF4444;
   --color-warning: #F59E0B;
-  --color-muted: #F3F4F6;
-  --color-muted-foreground: #6B7280;
-  --color-border: #E5E7EB;
+  --color-muted: #F0F2F5;
+  --color-muted-foreground: #667781;
+  --color-border: #E9EDEF;
   --color-card: #ffffff;
-  --color-sidebar: #F9FAFB;
-  --color-sidebar-active: #ECFDF5;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-sidebar-bg: #1E293B;
+  --color-sidebar-active: #10B981;
+  --color-panel-bg: #ffffff;
+  --color-panel-header: #F0F2F5;
+  --color-chat-bg: #EFEAE2;
+  --font-sans: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
@@ -25,33 +28,24 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C5C6C8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
-}
-
-/* Audio player styling */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -60,7 +54,6 @@ input[type="range"] {
   border-radius: 2px;
   outline: none;
 }
-
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -70,7 +63,6 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   cursor: pointer;
 }
-
 input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 14px;

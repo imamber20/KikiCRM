@@ -20,8 +20,9 @@ export interface Call {
   customerPhone: string;
   customerEmail: string;
   customerCompany?: string;
-  timestamp: Date;
-  duration: number; // seconds
+  customerRole?: string;
+  timestamp: string; // ISO string to avoid hydration issues
+  duration: number;
   status: CallStatus;
   subject: string;
   summary: string;
@@ -30,6 +31,8 @@ export interface Call {
   audioUrl: string;
   transcript: TranscriptLine[];
   topic: string;
+  totalCalls: number;
+  avgCallTime: string;
 }
 
 const AUDIO_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
@@ -43,17 +46,19 @@ const employees = [
 ];
 
 const topics = [
-  "Sanitär",
-  "Elektrik",
-  "Schreinerei",
-  "Heizung",
-  "Dachdecker",
-  "Malerei",
-  "Fliesenleger",
-  "Gartenbau",
+  "Sanitär", "Elektrik", "Schreinerei", "Heizung",
+  "Dachdecker", "Malerei", "Fliesenleger", "Gartenbau",
 ];
 
-function generateTranscript(subject: string, duration: number): TranscriptLine[] {
+function seededRandom(seed: number): () => number {
+  let s = seed;
+  return () => {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+function generateTranscript(convIndex: number, duration: number): TranscriptLine[] {
   const conversations: [string, string][][] = [
     [
       ["Guten Tag, hier spricht Kiki von Müller Handwerk. Wie kann ich Ihnen helfen?", "Kiki"],
@@ -110,22 +115,21 @@ function generateTranscript(subject: string, duration: number): TranscriptLine[]
     ],
   ];
 
-  const convIndex = Math.floor(Math.random() * conversations.length);
-  const conversation = conversations[convIndex];
+  const conversation = conversations[convIndex % conversations.length];
   const lines: TranscriptLine[] = [];
   let currentTime = 0;
 
   for (const [text, speaker] of conversation) {
     const wordsArray = text.split(" ");
-    const wordDuration = (duration / conversation.length / wordsArray.length);
+    const wordDuration = duration / conversation.length / wordsArray.length;
     const words: TranscriptWord[] = wordsArray.map((word, i) => ({
       word,
-      start: currentTime + i * wordDuration,
-      end: currentTime + (i + 1) * wordDuration,
+      start: Math.round((currentTime + i * wordDuration) * 100) / 100,
+      end: Math.round((currentTime + (i + 1) * wordDuration) * 100) / 100,
     }));
 
-    const lineStart = currentTime;
-    const lineEnd = currentTime + wordsArray.length * wordDuration;
+    const lineStart = Math.round(currentTime * 100) / 100;
+    const lineEnd = Math.round((currentTime + wordsArray.length * wordDuration) * 100) / 100;
 
     lines.push({
       speaker: speaker as "Kunde" | "Kiki",
@@ -135,7 +139,7 @@ function generateTranscript(subject: string, duration: number): TranscriptLine[]
       endTime: lineEnd,
     });
 
-    currentTime = lineEnd + 1.5; // pause between speakers
+    currentTime = lineEnd + 1.5;
   }
 
   return lines;
@@ -252,56 +256,142 @@ const companies = [
   "Fischer & Partner", undefined,
 ];
 
-function randomPhone(): string {
-  const prefixes = ["+49 170", "+49 171", "+49 172", "+49 176", "+49 151", "+49 152", "+49 157", "+49 160"];
-  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-  const num = Math.floor(Math.random() * 9000000 + 1000000);
-  return `${prefix} ${num}`;
-}
+const roles = [
+  "Eigentümer", "Geschäftsführer", "Hausmeister", "Mieter",
+  "Eigentümer", "Mieterin", "Architekt", "Eigentümerin",
+  "Verwalter", "Eigentümerin", "Eigentümer", "Verwalterin",
+  "Mieter", "Geschäftsführerin", "Eigentümer", "Verwalterin",
+  "Eigentümer", "Mieterin", "Geschäftsführer", "Mieterin",
+  "Geschäftsführer", "Eigentümerin", "Eigentümer", "Geschäftsführerin",
+  "Eigentümer", "Verwalterin", "Eigentümer", "Mieterin",
+  "Geschäftsführer", "Eigentümerin", "Eigentümer", "Verwalterin",
+  "Geschäftsführer", "Mieterin", "Eigentümer", "Eigentümerin",
+  "Mieter", "Verwalterin", "Eigentümer", "Mieterin",
+  "Verwalter", "Eigentümerin", "Eigentümer", "Mieterin",
+  "Geschäftsführer", "Eigentümerin", "Eigentümer", "Mieterin",
+  "Geschäftsführer", "Verwalterin",
+];
 
-function randomEmail(name: string): string {
-  const parts = name.toLowerCase().split(" ");
-  const domains = ["gmail.com", "web.de", "gmx.de", "t-online.de", "outlook.de"];
-  return `${parts[0]}.${parts[1]}@${domains[Math.floor(Math.random() * domains.length)]}`;
-}
+// Deterministic phone numbers
+const phones = [
+  "+49 170 3847291", "+49 171 9284756", "+49 172 6483920", "+49 176 1928374",
+  "+49 151 8374625", "+49 152 7463829", "+49 157 2938475", "+49 160 4827361",
+  "+49 170 5928374", "+49 171 3847562", "+49 172 9281746", "+49 176 4738291",
+  "+49 151 6283947", "+49 152 8374615", "+49 157 3928471", "+49 160 7284936",
+  "+49 170 2847391", "+49 171 5839274", "+49 172 3748291", "+49 176 8293741",
+  "+49 151 4738291", "+49 152 6928374", "+49 157 8374629", "+49 160 2938471",
+  "+49 170 7382941", "+49 171 4928371", "+49 172 8293746", "+49 176 3847291",
+  "+49 151 9284736", "+49 152 3847291", "+49 157 6283947", "+49 160 8374625",
+  "+49 170 4738291", "+49 171 2938475", "+49 172 7463829", "+49 176 5928374",
+  "+49 151 3847291", "+49 152 9281746", "+49 157 4827361", "+49 160 6483920",
+  "+49 170 8293741", "+49 171 3748291", "+49 172 5839274", "+49 176 2847391",
+  "+49 151 7382941", "+49 152 4928371", "+49 157 8293746", "+49 160 3847291",
+  "+49 170 6283947", "+49 171 8374615",
+];
 
-const statuses: CallStatus[] = ["erfolgreich", "nicht_erfolgreich", "weitergeleitet"];
+const emails = [
+  "markus.braun@gmail.com", "petra.schneider@web.de", "juergen.wolf@gmx.de", "sabine.becker@t-online.de",
+  "wolfgang.hoffmann@outlook.de", "monika.richter@gmail.com", "stefan.klein@web.de", "ursula.neumann@gmx.de",
+  "frank.zimmermann@t-online.de", "brigitte.krueger@outlook.de", "andreas.hartmann@gmail.com", "karin.lange@web.de",
+  "michael.schwarz@gmx.de", "helga.meier@t-online.de", "dieter.werner@outlook.de", "ingrid.schmitz@gmail.com",
+  "rainer.koch@web.de", "gabriele.schaefer@gmx.de", "bernd.bauer@t-online.de", "elisabeth.lorenz@outlook.de",
+  "uwe.hofmann@gmail.com", "renate.ludwig@web.de", "manfred.moeller@gmx.de", "christa.huber@t-online.de",
+  "helmut.krause@outlook.de", "heike.scholz@gmail.com", "gerhard.kaiser@web.de", "martina.fuchs@gmx.de",
+  "peter.herrmann@t-online.de", "doris.walter@outlook.de", "herbert.koenig@gmail.com", "susanne.mayer@web.de",
+  "werner.lang@gmx.de", "angelika.koehler@t-online.de", "karl.jung@outlook.de", "gisela.peters@gmail.com",
+  "norbert.mueller@web.de", "birgit.frank@gmx.de", "horst.lehmann@t-online.de", "ilse.berger@outlook.de",
+  "otto.schreiber@gmail.com", "ruth.martin@web.de", "friedrich.keller@gmx.de", "erika.haas@t-online.de",
+  "guenter.vogt@outlook.de", "elfriede.sommer@gmail.com", "heinz.winter@web.de", "lieselotte.berg@gmx.de",
+  "ernst.fischer@t-online.de", "hannelore.brandt@outlook.de",
+];
 
-export function generateCalls(): Call[] {
+// Deterministic durations (in seconds) and hour offsets
+const durations = [
+  183, 325, 192, 407, 278, 200, 346, 512, 156, 337,
+  421, 267, 189, 398, 301, 543, 225, 367, 445, 198,
+  284, 431, 356, 210, 478, 312, 267, 389, 502, 178,
+  345, 256, 412, 298, 367, 189, 434, 278, 523, 201,
+  378, 245, 467, 312, 189, 534, 278, 345, 423, 198,
+];
+
+const hourOffsets = [
+  2, 5, 8, 12, 15, 18, 24, 28, 32, 36,
+  42, 48, 52, 56, 60, 72, 78, 84, 96, 108,
+  120, 132, 144, 156, 168, 180, 192, 204, 216, 228,
+  240, 252, 264, 276, 288, 312, 336, 360, 384, 408,
+  432, 456, 480, 504, 528, 552, 576, 600, 648, 696,
+];
+
+const statusPattern: CallStatus[] = [
+  "erfolgreich", "erfolgreich", "erfolgreich", "nicht_erfolgreich", "erfolgreich",
+  "weitergeleitet", "erfolgreich", "erfolgreich", "erfolgreich", "weitergeleitet",
+  "erfolgreich", "nicht_erfolgreich", "erfolgreich", "erfolgreich", "weitergeleitet",
+  "erfolgreich", "erfolgreich", "nicht_erfolgreich", "erfolgreich", "erfolgreich",
+  "erfolgreich", "weitergeleitet", "erfolgreich", "erfolgreich", "nicht_erfolgreich",
+  "erfolgreich", "erfolgreich", "weitergeleitet", "erfolgreich", "erfolgreich",
+  "nicht_erfolgreich", "erfolgreich", "erfolgreich", "erfolgreich", "weitergeleitet",
+  "erfolgreich", "erfolgreich", "erfolgreich", "nicht_erfolgreich", "erfolgreich",
+  "weitergeleitet", "erfolgreich", "erfolgreich", "erfolgreich", "erfolgreich",
+  "nicht_erfolgreich", "weitergeleitet", "erfolgreich", "erfolgreich", "erfolgreich",
+];
+
+const employeeAssignments = [
+  0, 1, 2, 3, 4, 0, 1, 2, 3, 4,
+  0, 1, 2, 3, 4, 0, 1, 2, 3, 4,
+  0, 1, 2, 3, 4, 0, 1, 2, 3, 4,
+  0, 1, 2, 3, 4, 0, 1, 2, 3, 4,
+  0, 1, 2, 3, 4, 0, 1, 2, 3, 4,
+];
+
+const totalCallsPerCustomer = [
+  23, 5, 12, 8, 15, 3, 19, 7, 11, 4,
+  16, 9, 22, 6, 14, 2, 18, 10, 13, 7,
+  20, 4, 17, 8, 11, 3, 15, 6, 21, 5,
+  12, 9, 16, 7, 14, 2, 19, 8, 10, 4,
+  13, 6, 18, 5, 11, 3, 15, 7, 20, 9,
+];
+
+const avgCallTimes = [
+  "1:35", "2:10", "3:45", "1:20", "2:55", "4:10", "1:50", "3:20", "2:40", "1:15",
+  "3:05", "2:25", "1:45", "3:30", "2:15", "4:00", "1:55", "2:50", "3:15", "1:30",
+  "2:45", "1:10", "3:40", "2:05", "1:25", "3:50", "2:35", "1:40", "3:10", "2:20",
+  "1:50", "3:25", "2:00", "1:15", "3:35", "2:30", "1:45", "3:00", "2:10", "1:35",
+  "2:55", "1:20", "3:45", "2:40", "1:30", "3:15", "2:25", "1:50", "3:05", "2:15",
+];
+
+// Use a fixed base date to avoid hydration mismatch
+const BASE_DATE = new Date("2026-03-10T14:00:00.000Z");
+
+export function createDummyCalls(): Call[] {
   const calls: Call[] = [];
-  const now = new Date();
 
   for (let i = 0; i < 50; i++) {
-    const hoursAgo = Math.floor(Math.random() * 720); // last 30 days
-    const timestamp = new Date(now.getTime() - hoursAgo * 60 * 60 * 1000);
-    const duration = Math.floor(Math.random() * 540) + 60; // 1-10 minutes
-    const statusWeights = Math.random();
-    const status: CallStatus = statusWeights < 0.6 ? "erfolgreich" : statusWeights < 0.85 ? "weitergeleitet" : "nicht_erfolgreich";
-    const subjectIndex = i % subjects.length;
-    const summaryIndex = i % summaries.length;
-    const topicIndex = i % topics.length;
+    const timestamp = new Date(BASE_DATE.getTime() - hourOffsets[i] * 60 * 60 * 1000);
     const name = customerNames[i];
 
     calls.push({
       id: `call-${(i + 1).toString().padStart(3, "0")}`,
       customerName: name,
-      customerPhone: randomPhone(),
-      customerEmail: randomEmail(name),
+      customerPhone: phones[i],
+      customerEmail: emails[i],
       customerCompany: companies[i],
-      timestamp,
-      duration,
-      status,
-      subject: subjects[subjectIndex],
-      summary: summaries[summaryIndex],
-      summaryBullets: bulletSets[summaryIndex],
-      employeeAssigned: employees[Math.floor(Math.random() * employees.length)],
+      customerRole: roles[i],
+      timestamp: timestamp.toISOString(),
+      duration: durations[i],
+      status: statusPattern[i],
+      subject: subjects[i % subjects.length],
+      summary: summaries[i % summaries.length],
+      summaryBullets: bulletSets[i % bulletSets.length],
+      employeeAssigned: employees[employeeAssignments[i]],
       audioUrl: AUDIO_URL,
-      transcript: generateTranscript(subjects[subjectIndex], duration),
-      topic: topics[topicIndex],
+      transcript: generateTranscript(i, durations[i]),
+      topic: topics[i % topics.length],
+      totalCalls: totalCallsPerCustomer[i],
+      avgCallTime: avgCallTimes[i],
     });
   }
 
-  return calls.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  return calls;
 }
 
-export const dummyCalls = generateCalls();
+export const dummyCalls: Call[] = createDummyCalls();
