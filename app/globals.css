@@ -1,26 +1,38 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #F0F2F5;
-  --color-foreground: #111B21;
-  --color-primary: #10B981;
-  --color-primary-light: #C8F5E0;
-  --color-primary-dark: #059669;
-  --color-success: #10B981;
-  --color-error: #EF4444;
-  --color-warning: #F59E0B;
-  --color-muted: #F0F2F5;
-  --color-muted-foreground: #667781;
-  --color-border: #E9EDEF;
-  --color-card: #ffffff;
-  --color-sidebar-bg: #1E293B;
-  --color-sidebar-active: #10B981;
-  --color-panel-bg: #ffffff;
-  --color-panel-header: #F0F2F5;
-  --color-chat-bg: #EFEAE2;
-  --font-sans: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  /* Core */
+  --color-background:        #F7F8FC;
+  --color-foreground:        #0F1117;
+  --color-muted-foreground:  #8A94A6;
+  --color-border:            #EAECF0;
+
+  /* Brand */
+  --color-primary:           #10B981;
+  --color-primary-light:     #D1FAE5;
+  --color-primary-dark:      #059669;
+
+  /* Semantic */
+  --color-success:           #10B981;
+  --color-error:             #EF4444;
+  --color-warning:           #F59E0B;
+
+  /* Panels */
+  --color-panel-bg:          #FFFFFF;
+  --color-panel-header:      #F7F8FC;
+  --color-sidebar-bg:        #16171D;
+
+  /* Chat */
+  --color-chat-bg:           #F7F8FC;
+  --color-bubble-in:         #FFFFFF;
+  --color-bubble-out:        #E8FBF2;
+
+  /* Font */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -39,11 +51,12 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #C5C6C8; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
 input[type="range"] {
