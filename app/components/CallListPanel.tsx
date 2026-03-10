@@ -20,21 +20,17 @@ const statusConfig = {
   erfolgreich: {
     icon: <PhoneIncoming size={13} />,
     color: "text-emerald-500",
-    label: "Erfolgreich",
   },
   nicht_erfolgreich: {
     icon: <PhoneMissed size={13} />,
     color: "text-red-500",
-    label: "Nicht erfolgreich",
   },
   weitergeleitet: {
     icon: <PhoneForwarded size={13} />,
     color: "text-amber-500",
-    label: "Weitergeleitet",
   },
 };
 
-// Deterministic avatar colors
 const avatarColors = [
   "bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-rose-500",
   "bg-amber-500", "bg-cyan-500", "bg-indigo-500", "bg-pink-500",
@@ -72,12 +68,11 @@ export default function CallListPanel({
 
   return (
     <>
-      <div className="w-[340px] min-w-[300px] bg-panel-bg border-r border-border flex flex-col h-full shrink-0">
+      <div className="w-[360px] min-w-[320px] bg-panel-bg border-r border-border flex flex-col h-full shrink-0">
 
-        {/* Header */}
-        <div className="px-4 pt-4 pb-3 border-b border-border shrink-0">
-          {/* Search row */}
-          <div className="flex items-center gap-2 mb-3">
+        {/* Search header */}
+        <div className="px-4 pt-4 pb-3 shrink-0">
+          <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
               <input
@@ -85,43 +80,48 @@ export default function CallListPanel({
                 value={search}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Suche nach Kunde, Datum, Stichwort..."
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-panel-header border border-transparent text-[13px] placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-colors"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-gray-100 border border-transparent text-[13px] placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/30 transition-all"
               />
             </div>
             <button
               onClick={() => setFilterOpen(true)}
               className={cn(
-                "w-9 h-9 rounded-lg flex items-center justify-center transition-colors relative shrink-0",
+                "w-10 h-10 rounded-xl flex items-center justify-center transition-colors relative shrink-0",
                 activeFilterCount > 0
                   ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-panel-header"
+                  : "text-muted-foreground hover:bg-gray-100"
               )}
               title="Filter"
             >
               <SlidersHorizontal size={16} />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-semibold">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white text-[9px] flex items-center justify-center font-bold">
                   {activeFilterCount}
                 </span>
               )}
             </button>
           </div>
+        </div>
 
-          {/* Section label */}
-          <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wide">
-            Anrufe{calls.length > 0 && <span className="ml-1.5 text-primary">{calls.length}</span>}
-          </p>
+        {/* Section label with border */}
+        <div className="px-4 py-2 border-y border-border bg-gray-50/60">
+          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+            Anrufe
+          </span>
+          {calls.length > 0 && (
+            <span className="text-[11px] font-bold text-primary ml-2">{calls.length}</span>
+          )}
         </div>
 
         {/* Call list */}
         <div className="flex-1 overflow-y-auto">
           {calls.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-muted-foreground px-6">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-                <Phone size={20} className="opacity-40" />
+              <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                <Phone size={22} className="opacity-30" />
               </div>
               <p className="text-[13px] text-center font-medium">Keine Anrufe gefunden</p>
-              <p className="text-[11px] text-center mt-1 opacity-70">Versuchen Sie andere Suchbegriffe</p>
+              <p className="text-[11px] text-center mt-1 opacity-60">Versuchen Sie andere Suchbegriffe</p>
             </div>
           )}
 
@@ -138,15 +138,15 @@ export default function CallListPanel({
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSelectCall(call); }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors cursor-pointer border-b border-border/40",
+                  "flex items-center gap-3 px-4 py-4 cursor-pointer transition-all border-b border-border/50",
                   isSelected
-                    ? "bg-primary/5 border-l-2 border-l-primary"
-                    : "hover:bg-gray-50/80 border-l-2 border-l-transparent"
+                    ? "bg-primary/5"
+                    : "hover:bg-gray-50"
                 )}
               >
                 {/* Avatar */}
                 <div className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center text-white text-[12px] font-bold shrink-0 shadow-sm",
+                  "w-11 h-11 rounded-full flex items-center justify-center text-white text-[13px] font-bold shrink-0",
                   getAvatarColor(call.customerName)
                 )}>
                   {getInitials(call.customerName)}
@@ -154,49 +154,43 @@ export default function CallListPanel({
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-0.5">
+                  <div className="flex items-center gap-2 mb-1">
                     <span className={cn(
-                      "font-semibold text-[13px] truncate",
+                      "font-semibold text-[13px] truncate leading-none",
                       isRedName ? "text-red-500" : "text-foreground"
                     )}>
                       {call.customerName}
                     </span>
-                    <span className={cn("shrink-0", status.color)}>
-                      {status.icon}
-                    </span>
+                    <span className={cn("shrink-0", status.color)}>{status.icon}</span>
                   </div>
-                  <p className="text-[12px] text-muted-foreground truncate leading-tight">
+                  <p className="text-[12px] text-muted-foreground truncate leading-none mb-1">
                     {call.subject}
                   </p>
-                  <p className="text-[11px] text-muted-foreground/60 truncate mt-0.5">
+                  <p className="text-[11px] text-muted-foreground/50 leading-none">
                     {formatTimestamp(call.timestamp)}
                   </p>
                 </div>
 
-                {/* Right: duration + actions */}
-                <div className="flex flex-col items-end gap-1.5 shrink-0">
-                  <span className="text-[12px] font-semibold tabular-nums text-foreground/70">
+                {/* Duration + actions */}
+                <div className="flex flex-col items-end gap-2 shrink-0">
+                  <span className="text-[12px] font-semibold tabular-nums text-foreground/60">
                     {formatDuration(call.duration)}
                   </span>
-                  <div className="flex items-center gap-0.5">
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-foreground transition-colors"
+                  <div className="flex items-center gap-1">
+                    <button
+                      className="w-7 h-7 rounded-md flex items-center justify-center text-muted-foreground/60 hover:bg-gray-200 hover:text-foreground transition-colors"
                       title="Abspielen"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                    </span>
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-foreground transition-colors"
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                    <button
+                      className="w-7 h-7 rounded-md flex items-center justify-center text-muted-foreground/60 hover:bg-gray-200 hover:text-foreground transition-colors"
                       title="Herunterladen"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                    </span>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -205,7 +199,6 @@ export default function CallListPanel({
         </div>
       </div>
 
-      {/* Filter panel */}
       <FilterBar
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
