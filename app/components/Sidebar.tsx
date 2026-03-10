@@ -8,6 +8,7 @@ import {
   UserCog,
   CreditCard,
   HelpCircle,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,51 +19,68 @@ interface SidebarItem {
 }
 
 const topItems: SidebarItem[] = [
-  { label: "Analysen", icon: <BarChart3 size={20} /> },
-  { label: "Anrufprotokoll", icon: <Phone size={20} />, active: true },
-  { label: "Wissensbasis", icon: <BookOpen size={20} /> },
-  { label: "Kunden", icon: <Users size={20} /> },
-  { label: "Mitarbeiter", icon: <UserCog size={20} /> },
-  { label: "Abonnement & Rechnungen", icon: <CreditCard size={20} /> },
+  { label: "Analysen", icon: <BarChart3 size={19} /> },
+  { label: "Anrufprotokoll", icon: <Phone size={19} />, active: true },
+  { label: "Wissensbasis", icon: <BookOpen size={19} /> },
+  { label: "Kunden", icon: <Users size={19} /> },
+  { label: "Mitarbeiter", icon: <UserCog size={19} /> },
+  { label: "Abonnement & Rechnungen", icon: <CreditCard size={19} /> },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="w-[56px] bg-sidebar-bg h-full flex flex-col items-center py-4 shrink-0">
-      {/* Logo */}
-      <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center mb-6">
-        <Phone size={18} className="text-white" />
+    <aside className="w-[60px] bg-sidebar-bg h-full flex flex-col items-center py-4 shrink-0">
+
+      {/* Logo mark */}
+      <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center mb-8 shadow-lg shadow-primary/30">
+        <Phone size={17} className="text-white" strokeWidth={2.5} />
       </div>
 
       {/* Nav icons */}
-      <nav className="flex-1 flex flex-col items-center gap-1">
+      <nav className="flex-1 flex flex-col items-center gap-1.5 w-full px-2">
         {topItems.map((item, i) => (
           <button
             key={i}
             title={item.label}
             className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 relative group",
+              "w-full h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group",
               item.active
-                ? "bg-primary text-white"
-                : "text-slate-400 hover:text-white hover:bg-slate-700"
+                ? "bg-primary text-white shadow-md shadow-primary/25"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/70"
             )}
           >
             {item.icon}
             {/* Tooltip */}
-            <span className="absolute left-full ml-2 px-2 py-1 bg-slate-900 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+            <span className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-slate-900 text-white text-[11px] font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-lg">
               {item.label}
+              {/* Tooltip arrow */}
+              <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
             </span>
           </button>
         ))}
       </nav>
 
-      {/* Bottom: help */}
-      <div className="flex flex-col items-center gap-2">
+      {/* Bottom buttons */}
+      <div className="flex flex-col items-center gap-1.5 w-full px-2">
+        <button
+          title="Einstellungen"
+          className="w-full h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700/70 transition-colors relative group"
+        >
+          <Settings size={19} />
+          <span className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-slate-900 text-white text-[11px] font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-lg">
+            Einstellungen
+            <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+          </span>
+        </button>
         <button
           title="Hilfe"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+          className="w-full h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700/70 transition-colors relative group"
         >
-          <HelpCircle size={20} />
+          <HelpCircle size={19} />
+          <span className="absolute left-[calc(100%+8px)] px-2.5 py-1.5 bg-slate-900 text-white text-[11px] font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-lg">
+            Hilfe
+            <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+          </span>
         </button>
       </div>
     </aside>
