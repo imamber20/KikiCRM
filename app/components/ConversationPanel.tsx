@@ -27,7 +27,6 @@ const statusColors: Record<string, string> = {
   weitergeleitet: "bg-amber-100 text-amber-700",
 };
 
-// Deterministic avatar colors (same logic as CallListPanel)
 const avatarColors = [
   "bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-rose-500",
   "bg-amber-500", "bg-cyan-500", "bg-indigo-500", "bg-pink-500",
@@ -51,7 +50,7 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
             <Phone size={32} className="text-primary/40" />
           </div>
           <p className="text-lg font-semibold text-foreground/60">Kiki CRM</p>
-          <p className="text-sm mt-1 text-muted-foreground">Wählen Sie einen Anruf aus der Liste</p>
+          <p className="text-sm mt-1">Wählen Sie einen Anruf aus der Liste</p>
         </div>
       </div>
     );
@@ -59,8 +58,8 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
 
   return (
     <div className="flex-1 flex flex-col h-full min-w-0">
-      {/* Header bar */}
-      <div className="h-[64px] bg-panel-bg border-b border-border px-5 flex items-center justify-between shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      {/* Header */}
+      <div className="h-16 bg-panel-bg border-b border-border px-5 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className={cn(
             "w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0",
@@ -68,14 +67,13 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
           )}>
             {getInitials(call.customerName)}
           </div>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0">
             <h2 className="font-semibold text-[14px] text-foreground truncate leading-tight">{call.customerName}</h2>
             <p className="text-[12px] text-muted-foreground truncate">{call.customerPhone}</p>
           </div>
         </div>
-        {/* Subject pill */}
         <div className="hidden sm:block mx-4">
-          <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium whitespace-nowrap truncate max-w-[200px] block">
+          <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-medium truncate max-w-[220px] block">
             {call.subject}
           </span>
         </div>
@@ -89,141 +87,136 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
           <button
             onClick={onMoreClick}
             className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors text-muted-foreground"
-            title="Zusammenfassung & Aufgaben"
+            title="Zusammenfassung"
           >
             <MoreHorizontal size={17} />
           </button>
         </div>
       </div>
 
-      {/* Chat / Conversation area */}
-      <div className="flex-1 overflow-y-auto bg-chat-bg px-4 sm:px-6 lg:px-10 py-5">
+      {/* Chat area */}
+      <div className="flex-1 overflow-y-auto bg-chat-bg px-6 lg:px-10 py-6">
 
         {/* Date divider */}
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center gap-3">
-            <div className="h-px w-12 bg-border/60" />
-            <span className="px-3 py-1 bg-white/80 rounded-full text-[11px] text-muted-foreground shadow-sm font-medium">
-              {formatTimestamp(call.timestamp)}
-            </span>
-            <div className="h-px w-12 bg-border/60" />
-          </div>
+        <div className="flex items-center justify-center mb-8">
+          <div className="h-px flex-1 bg-black/5" />
+          <span className="mx-4 px-3 py-1 bg-white rounded-full text-[11px] text-muted-foreground shadow-sm font-medium">
+            {formatTimestamp(call.timestamp)}
+          </span>
+          <div className="h-px flex-1 bg-black/5" />
         </div>
 
-        {/* Kiki summary bubble */}
-        <div className="flex justify-start mb-5">
-          <div className="flex items-start gap-2.5 max-w-[520px]">
-            {/* Kiki avatar */}
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shrink-0 mt-5 shadow-sm">
-              K
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] text-muted-foreground mb-1.5 ml-0.5 font-medium">
-                Kiki (KI) &nbsp;·&nbsp; {formatTimestamp(call.timestamp)}
-              </p>
-              <div className="bg-white rounded-2xl rounded-tl-sm p-4 shadow-sm">
-                {/* Call header inside bubble */}
-                <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-gray-100">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <PhoneCall size={14} className="text-primary" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-semibold text-foreground truncate">{call.subject}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className={cn("px-1.5 py-0.5 rounded-full text-[10px] font-semibold", statusColors[call.status])}>
-                        {statusLabels[call.status]}
-                      </span>
-                      <span className="text-[11px] text-muted-foreground">{formatDuration(call.duration)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Summary bullets */}
-                <div className="space-y-2 mb-3">
-                  {call.summaryBullets.map((bullet, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-                      <span className="text-foreground/80 leading-relaxed">{bullet}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <p className="text-[11px] text-muted-foreground border-t border-gray-100 pt-2">
-                  Mitarbeiter: <span className="font-medium text-foreground/70">{call.employeeAssigned}</span>
-                </p>
+        {/* Kiki AI summary bubble */}
+        <div className="flex items-start gap-3 mb-6 max-w-[560px]">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
+            K
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] text-muted-foreground mb-1.5 font-medium">
+              Kiki (KI) · {formatTimestamp(call.timestamp)}
+            </p>
+            <div className="bg-white rounded-2xl rounded-tl-md p-4 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
+              <p className="text-[14px] font-bold text-foreground mb-0.5">{call.subject}</p>
+              <div className="flex items-center gap-2 mb-3">
+                <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold", statusColors[call.status])}>
+                  {statusLabels[call.status]}
+                </span>
+                <span className="text-[11px] text-muted-foreground">{formatDuration(call.duration)}</span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Recording bubble */}
-        <div className="flex justify-start mb-5">
-          <div className="flex items-start gap-2.5 max-w-[520px] w-full">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shrink-0 mt-5 shadow-sm">
-              K
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] text-muted-foreground mb-1.5 ml-0.5 font-medium">
-                Aufnahme
+              <ul className="space-y-1.5 mb-3">
+                {call.summaryBullets.map((b, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[13px] text-foreground/80 leading-snug">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-[6px] shrink-0" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-[11px] text-muted-foreground pt-2 border-t border-gray-100">
+                Mitarbeiter: {call.employeeAssigned}
               </p>
-              <div className="bg-white rounded-2xl rounded-tl-sm p-3.5 shadow-sm">
-                <AudioPlayerInline audioUrl={call.audioUrl} duration={call.duration} />
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Transcript conversation bubbles */}
+        {/* Recording */}
+        <div className="flex items-start gap-3 mb-8 max-w-[560px]">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
+            K
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] text-muted-foreground mb-1.5 font-medium">Aufnahme</p>
+            <div className="bg-white rounded-2xl rounded-tl-md p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
+              <AudioPlayerInline audioUrl={call.audioUrl} duration={call.duration} />
+            </div>
+          </div>
+        </div>
+
+        {/* Transcript — group consecutive messages from same speaker */}
         {call.transcript.map((line, idx) => {
           const isKiki = line.speaker === "Kiki";
+          const prevSpeaker = idx > 0 ? call.transcript[idx - 1].speaker : null;
+          const isNewSpeaker = line.speaker !== prevSpeaker;
+
           return (
             <div
               key={idx}
               className={cn(
-                "flex mb-4",
-                isKiki ? "justify-start" : "justify-end"
+                "flex",
+                isKiki ? "justify-start" : "justify-end",
+                isNewSpeaker ? "mt-5" : "mt-1.5"
               )}
             >
-              {/* Kiki: avatar on left */}
+              {/* Kiki avatar — only on first message of a group */}
               {isKiki && (
-                <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-bold shrink-0 mr-2 mt-5 shadow-sm">
-                  K
+                <div className="w-8 shrink-0 mr-2.5">
+                  {isNewSpeaker && (
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
+                      K
+                    </div>
+                  )}
                 </div>
               )}
 
-              <div className={cn("flex flex-col", isKiki ? "items-start" : "items-end", "max-w-[75%]")}>
-                <p className="text-[11px] text-muted-foreground mb-1 mx-1 font-medium">
-                  {isKiki ? "Kiki (KI)" : call.customerName}
-                </p>
+              <div className={cn("flex flex-col max-w-[65%]", isKiki ? "items-start" : "items-end")}>
+                {/* Speaker label — only when speaker changes */}
+                {isNewSpeaker && (
+                  <p className="text-[11px] text-muted-foreground mb-1 mx-1 font-medium">
+                    {isKiki ? "Kiki (KI)" : call.customerName}
+                  </p>
+                )}
                 <div className={cn(
-                  "px-3.5 py-2.5 rounded-2xl text-[13px] shadow-sm leading-relaxed",
+                  "px-4 py-2.5 text-[13px] leading-relaxed",
                   isKiki
-                    ? "bg-white text-foreground rounded-tl-sm"
-                    : "bg-primary-light text-foreground rounded-tr-sm"
+                    ? "bg-white text-foreground rounded-2xl rounded-tl-md shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+                    : "bg-primary-light text-foreground rounded-2xl rounded-tr-md shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
                 )}>
                   {line.text}
                 </div>
               </div>
 
-              {/* Customer: avatar on right */}
+              {/* Customer avatar — only on first message of a group */}
               {!isKiki && (
-                <div className={cn(
-                  "w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0 ml-2 mt-5 shadow-sm",
-                  getAvatarColor(call.customerName)
-                )}>
-                  {getInitials(call.customerName)}
+                <div className="w-8 shrink-0 ml-2.5">
+                  {isNewSpeaker && (
+                    <div className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold",
+                      getAvatarColor(call.customerName)
+                    )}>
+                      {getInitials(call.customerName)}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           );
         })}
 
-        {/* Missed call bubble */}
+        {/* Missed call */}
         {call.status === "nicht_erfolgreich" && (
-          <div className="flex justify-center my-5">
-            <div className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5 border border-red-100">
-              <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                <Phone size={13} className="text-red-500" />
+          <div className="flex justify-center mt-6">
+            <div className="bg-white rounded-2xl px-5 py-3 shadow-sm flex items-center gap-3 border border-red-100">
+              <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                <Phone size={14} className="text-red-500" />
               </div>
               <div>
                 <p className="text-[13px] font-semibold text-foreground">Verpasster Anruf</p>
@@ -233,8 +226,7 @@ export default function ConversationPanel({ call, onMoreClick }: ConversationPan
           </div>
         )}
 
-        {/* Bottom padding */}
-        <div className="h-4" />
+        <div className="h-6" />
       </div>
     </div>
   );
