@@ -149,11 +149,14 @@ export default function CallListPanel({
             const isRedName = call.status === "nicht_erfolgreich" || call.status === "weitergeleitet";
 
             return (
-              <button
+              <div
                 key={call.id}
                 onClick={() => onSelectCall(call)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSelectCall(call); }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-border/50",
+                  "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-border/50 cursor-pointer",
                   isSelected
                     ? "bg-primary/5"
                     : "hover:bg-gray-50"
@@ -191,15 +194,27 @@ export default function CallListPanel({
                     {formatDuration(call.duration)}
                   </span>
                   <div className="flex items-center gap-1 text-muted-foreground">
-                    <button className="p-1 rounded hover:bg-gray-100 transition-colors" title="Abspielen">
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="p-1 rounded hover:bg-gray-200 transition-colors inline-flex"
+                      title="Abspielen"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                    </button>
-                    <button className="p-1 rounded hover:bg-gray-100 transition-colors" title="Herunterladen">
+                    </span>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="p-1 rounded hover:bg-gray-200 transition-colors inline-flex"
+                      title="Herunterladen"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                    </button>
+                    </span>
                   </div>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
