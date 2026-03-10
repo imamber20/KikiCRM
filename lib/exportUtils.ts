@@ -1,7 +1,5 @@
 import { Call } from "./dummyCalls";
-import { formatDuration } from "./utils";
-import { format } from "date-fns";
-import { de } from "date-fns/locale";
+import { formatDuration, formatTimestamp } from "./utils";
 
 const STATUS_LABELS: Record<string, string> = {
   erfolgreich: "Erfolgreich",
@@ -11,22 +9,15 @@ const STATUS_LABELS: Record<string, string> = {
 
 export function exportCallsToCSV(calls: Call[]): void {
   const headers = [
-    "ID",
-    "Kunde",
-    "Telefon",
-    "Datum",
-    "Dauer",
-    "Status",
-    "Betreff",
-    "Zusammenfassung",
-    "Mitarbeiter",
+    "ID", "Kunde", "Telefon", "Datum", "Dauer",
+    "Status", "Betreff", "Zusammenfassung", "Mitarbeiter",
   ];
 
   const rows = calls.map((call) => [
     call.id,
     call.customerName,
     call.customerPhone,
-    format(call.timestamp, "dd.MM.yyyy HH:mm", { locale: de }),
+    formatTimestamp(call.timestamp),
     formatDuration(call.duration),
     STATUS_LABELS[call.status] || call.status,
     call.subject,
@@ -41,13 +32,11 @@ export function exportCallsToCSV(calls: Call[]): void {
     ),
   ].join("\n");
 
-  const blob = new Blob(["\ufeff" + csvContent], {
-    type: "text/csv;charset=utf-8;",
-  });
+  const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `anrufprotokoll_${format(new Date(), "yyyy-MM-dd")}.csv`;
+  link.download = `anrufprotokoll_export.csv`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -58,20 +47,18 @@ export function exportCallToPDF(call: Call): void {
     const pageWidth = doc.internal.pageSize.getWidth();
     let y = 20;
 
-    // Title
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
     doc.text("Anrufprotokoll", pageWidth / 2, y, { align: "center" });
     y += 15;
 
-    // Call info
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
 
     const info = [
       ["Kunde:", call.customerName],
       ["Telefon:", call.customerPhone],
-      ["Datum:", format(call.timestamp, "dd.MM.yyyy HH:mm", { locale: de })],
+      ["Datum:", formatTimestamp(call.timestamp)],
       ["Dauer:", formatDuration(call.duration)],
       ["Status:", STATUS_LABELS[call.status] || call.status],
       ["Betreff:", call.subject],
@@ -87,8 +74,6 @@ export function exportCallToPDF(call: Call): void {
     }
 
     y += 5;
-
-    // Summary
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
     doc.text("Zusammenfassung", 20, y);
@@ -103,8 +88,6 @@ export function exportCallToPDF(call: Call): void {
     }
 
     y += 5;
-
-    // Transcript
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
     doc.text("Transkript", 20, y);
@@ -112,10 +95,7 @@ export function exportCallToPDF(call: Call): void {
 
     doc.setFontSize(9);
     for (const line of call.transcript) {
-      if (y > 270) {
-        doc.addPage();
-        y = 20;
-      }
+      if (y > 270) { doc.addPage(); y = 20; }
       doc.setFont("helvetica", "bold");
       doc.text(`${line.speaker}:`, 20, y);
       doc.setFont("helvetica", "normal");
@@ -124,7 +104,7 @@ export function exportCallToPDF(call: Call): void {
       y += textLines.length * 4.5 + 3;
     }
 
-    doc.save(`anruf_${call.id}_${format(call.timestamp, "yyyy-MM-dd")}.pdf`);
+    doc.save(`anruf_${call.id}.pdf`);
   });
 }
 
